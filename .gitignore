@@ -2,6 +2,7 @@
 **/.DS_Store
 #**/.env
 **/.env.example
+!backend/.env.example
 **/node_modules
 **/prompts_master.md
 
@@ -15,6 +16,9 @@
 # production
 **/build
 **/dist
+
+# uploaded CVs (local dev)
+**/uploads/
 
 # logs
 npm-debug.log*
