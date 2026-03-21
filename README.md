@@ -68,6 +68,8 @@ npm start
 
 The backend server will be running at http://localhost:3010, and the frontend will be available at http://localhost:3000.
 
+For the React app, copy `frontend/.env.example` to `frontend/.env.local` and set `REACT_APP_API_URL` if the API is not on `http://localhost:3010` (see `frontend/README.md`).
+
 ## Docker y PostgreSQL
 
 This project uses Docker to run a PostgreSQL database. Here's how to get it up and running:
@@ -163,6 +165,8 @@ npm start
 ```
 
 El servidor backend estará corriendo en http://localhost:3010 y el frontend estará disponible en http://localhost:3000.
+
+Para la app React, copia `frontend/.env.example` a `frontend/.env.local` y configura `REACT_APP_API_URL` si la API no está en `http://localhost:3010` (más detalle en `frontend/README.md`).
 
 ## Docker y PostgreSQL
 
