@@ -10,6 +10,7 @@
         "test": "jest --runInBand",
         "prisma:init": "npx prisma init",
         "prisma:generate": "npx prisma generate",
+        "db:migrate": "prisma migrate deploy",
         "start:prod": "npm run build && npm start"
     },
     "keywords": [],

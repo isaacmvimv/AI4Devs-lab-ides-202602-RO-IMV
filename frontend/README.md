@@ -1,46 +1,56 @@
-# Getting Started with Create React App
+# LTI frontend (Create React App)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React 18 + TypeScript client for the lab ATS. User-facing copy for this feature is in **Spanish**; code and developer docs stay in **English**.
 
-## Available Scripts
+## Prerequisites
 
-In the project directory, you can run:
+- Node.js and npm (aligned with the root project README)
+- Backend API running and reachable (default `http://localhost:3010`) with CORS allowing the CRA origin
 
-### `npm start`
+## Environment variables
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Create React App only reads variables prefixed with `REACT_APP_`.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. Copy `frontend/.env.example` to `frontend/.env.local` (do **not** commit `.env.local`).
+2. Set `REACT_APP_API_URL` to your API base URL **without** a trailing slash, e.g. `http://localhost:3010`.
 
-### `npm test`
+If `REACT_APP_API_URL` is unset, the app falls back to `http://localhost:3010`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Scripts
 
-### `npm run build`
+| Command | Description |
+|--------|-------------|
+| `npm start` | Dev server at [http://localhost:3000](http://localhost:3000) |
+| `npm test` | Jest + React Testing Library (non-interactive: `npm test -- --watchAll=false`) |
+| `npm run build` | Production build into `build/` |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## App routes
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Path | Screen |
+|------|--------|
+| `/` | Recruiter dashboard with **Añadir candidato** CTA |
+| `/candidates/new` | Add candidate form (`POST /api/candidates`, multipart) |
+| `*` | Redirects to `/` |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Feature layout
 
-### `npm run eject`
+- `src/pages/` — route-level screens
+- `src/components/candidates/` — candidate form UI
+- `src/services/candidateService.ts` — multipart API client (Axios)
+- `src/types/candidate.ts` — DTOs aligned with OpenAPI (`CreateCandidateApiResponse`, `LabStructuredError`)
+- `src/utils/candidateFormValidation.ts` — client-side validation (Spanish messages)
+- `src/constants/uploads.ts` — `MAX_CV_BYTES` (10 MiB, same default as backend `MAX_CV_BYTES`)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Testing
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Component tests live next to components or under `src/tests/`; Jest is configured with `preset: 'ts-jest'` and `testEnvironment: 'jsdom'`.
+- **Cypress** is not wired in this lab repo yet; end-to-end tests are deferred in favour of RTL coverage for this ticket. When Cypress is added team-wide, scaffold `cypress.config.ts` and e2e specs as described in `ai-specs/specs/frontend-standards.mdc`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Axios version note
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+The project uses **Axios 0.27.x** so Jest 27 can load the client without ESM transform workarounds. The runtime API used here (`post`, `isAxiosError`) matches 1.x usage; upgrading to Axios 1+ is possible later if Jest is configured to transform `node_modules/axios` or the stack moves to a native ESM test runner.
 
-## Learn More
+## Further reading
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Root [README.md](../README.md) for full-stack setup and Docker
+- API contract: `ai-specs/specs/api-spec.yml` → `POST /api/candidates`
