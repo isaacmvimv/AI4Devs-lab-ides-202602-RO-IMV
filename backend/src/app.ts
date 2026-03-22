@@ -1,28 +1,37 @@
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import express from 'express';
-import { errorHandler } from './middleware/errorHandler';
+import multer from 'multer';
 import candidateRoutes from './routes/candidateRoutes';
+
+const corsOrigin = process.env.CORS_ORIGIN || process.env.FRONTEND_URL || 'http://localhost:3000';
 
 export function createApp(): express.Application {
   const app = express();
 
-  const corsOrigin = process.env.FRONTEND_URL ?? process.env.CORS_ORIGIN;
   app.use(
     cors({
-      origin: corsOrigin || true,
+      origin: corsOrigin,
       credentials: true,
     })
   );
 
-  app.use(express.json({ limit: '1mb' }));
-
-  app.get('/', (_req, res) => {
+  app.get('/', (req, res) => {
     res.send('Hola LTI!');
   });
 
   app.use('/api/candidates', candidateRoutes);
 
-  app.use(errorHandler);
+  app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+    if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'CV file is too large', code: 'CV_TOO_LARGE' },
+      });
+    }
+    console.error(err);
+    res.type('text/plain');
+    res.status(500).send('Something broke!');
+  });
 
   return app;
 }
